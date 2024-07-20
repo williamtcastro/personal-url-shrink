@@ -27,13 +27,16 @@ const tableId = process.env.AIRTABLE_TABLE_ID;
 
 const useAirtable = (): AirTableHook => {
   const getTableContents = async () => {
-    const response = await fetch(`${apiURL}/${baseId}/${tableId}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${process.env.AIRTABLE_PERSONAL_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await fetch(
+      `${apiURL}/${baseId}/${tableId}?maxRecords=100`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${process.env.AIRTABLE_PERSONAL_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
     const jsonResponse = (await response.json()) as AirTableRecordsResponse;
 
