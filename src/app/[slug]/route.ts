@@ -1,7 +1,22 @@
+import useAirtable from '@/hooks/airtable';
+import { NextResponse, NextRequest } from 'next/server';
+
 export async function GET(
-  request: Request,
+  _request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
-  const slug = params.slug; // 'a', 'b', or 'c'
-  return Response.json({ slug });
+  const airtable = useAirtable();
+  const slug = params.slug;
+
+  const record = await airtable.getRecordById(slug);
+
+  if (!record)
+    return NextResponse.json(
+      {
+        message: 'ID not found',
+      },
+      { status: 404 }
+    );
+
+  return NextResponse.redirect(record.fields.url, 307);
 }
