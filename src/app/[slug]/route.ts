@@ -10,7 +10,7 @@ export async function GET(
 
   const record = await airtable.getRecordById(slug);
 
-  if (!record)
+  if (!record || record.fields.is_enabled === 0)
     return NextResponse.json(
       {
         message: 'ID not found',
