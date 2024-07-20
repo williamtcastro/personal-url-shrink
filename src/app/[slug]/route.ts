@@ -18,5 +18,5 @@ export async function GET(
       { status: 404 }
     );
 
-  return NextResponse.redirect(record.fields.url, 308);
+  return NextResponse.redirect(record.fields.url, 307);
 }
