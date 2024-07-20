@@ -27,6 +27,8 @@ const tableId = process.env.AIRTABLE_TABLE_ID;
 
 const useAirtable = (): AirTableHook => {
   const getTableContents = async () => {
+    const recordsMap = new Map<string, AirTableTableItem>();
+
     const response = await fetch(
       `${apiURL}/${baseId}/${tableId}?maxRecords=100`,
       {
@@ -36,15 +38,15 @@ const useAirtable = (): AirTableHook => {
           'Content-Type': 'application/json',
         },
       }
-    );
+    )
+      .then(async (response) => {
+        const { records } = (await response.json()) as AirTableRecordsResponse;
 
-    const jsonResponse = (await response.json()) as AirTableRecordsResponse;
-
-    const recordsMap = new Map<string, AirTableTableItem>();
-
-    jsonResponse.records.map((record) => {
-      recordsMap.set(record.fields.id, record);
-    });
+        records.forEach((record) => {
+          recordsMap.set(record.fields.id, record);
+        });
+      })
+      .catch((e) => console.error(e));
 
     return recordsMap;
   };
